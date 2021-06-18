@@ -11,6 +11,12 @@ const server = {
 	        method: 'post',
 	        data
 	    })
+	},
+	getPeople(data) {
+	    return axios('/conference/insertPerson', {
+	        method: 'post',
+	        data
+	    })
 	}
 };
 

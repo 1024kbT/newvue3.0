@@ -40,6 +40,7 @@
             @aa="tty"
             :txtlist="txtList"
             :key="index"
+            :persons='persons'
         ></Hello>
     </div>
 </template>
@@ -56,7 +57,6 @@ export default {
             y: 0,
             xlist: [],
             sec: null,
-            items: [],
             index: 1,
             option: {},
             persons: [],
@@ -74,7 +74,7 @@ export default {
     },
 
     mounted: function() {
-        this.items = this.GLOBAL.baseURL;
+        
     },
     methods: {
         onDragstop(x, y, width, height) {
@@ -109,9 +109,10 @@ export default {
             console.log(111, this.test);
         },
         Sort: function() {
+            console.log()
             const app = this;
             let data = {
-                confSeatList: this.items,
+                confSeatList: this.GLOBAL.baseURL,
                 sortType: 1,
             };
             this.$axios
@@ -122,6 +123,7 @@ export default {
                 .catch((err) => {});
         },
         insertPeople() {
+            
             let data = {
                 blocks: [
                     {
@@ -134,8 +136,7 @@ export default {
             this.$axios
                 .getPeople(data)
                 .then((res) => {
-                    console.log(res.data);
-                    this.persons = res.data;
+                    this.persons = res.data.data.confSeats;
                 })
                 .catch((err) => {});
         },

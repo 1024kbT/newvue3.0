@@ -104,7 +104,10 @@ export default {
             deep: true,
         },
         persons: {
-            handler: function(newVal, oldVal) {},
+            handler: function(newVal, oldVal) {
+                console.log(111)
+                this.sortPerson();
+            },
             deep: true,
         },
         txtlist:{
@@ -121,8 +124,7 @@ export default {
                 for (var j = 0; j < this.seat.length; j++) {
                     if (i == this.seat[j]) {
                         var a = "";
-                        var r,
-                            w = 0;
+                        var r,w = 0;
                         r = Math.ceil((i + 1) / 30);
                         w = parseInt((i + 1) % 30);
                         a = r + "-" + w;
@@ -136,12 +138,13 @@ export default {
         handleRectSelection(data) {
             var a = "";
             const app = this;
-            console.log(data)
+            
             $(".t1").each(function(index) {
                 var rect = app.getRect($(this));
                 app.xinxi[index]["blockId"] = 1;
                 if (app.isCross(data, rect)) {
                     app.seat.push(index);
+                    
                     app.items.push(app.xinxi[index]);
                     $(this).addClass("selected");
                 } else {
@@ -165,17 +168,13 @@ export default {
             return !(xNotCross || yNotCross);
         },
         sortPerson(){
-			var oT1=document.querySelectorAll(".t1");
+            var oT1=document.querySelectorAll(".t1");
 			for(var i = 0;i<oT1.length;i++){
 				
 				for (var j=0;j<this.seat.length;j++){
 					if(i == this.seat[j]){
-						
-						var a=""
-						var r,w=0;
-						r=Math.ceil((i+1)/30)
-						w=parseInt((i+1)%30)
-						a=r+"-"+w
+                        
+                        console.log(this.persons[j]['userUnit'].des)
 						oT1[i].innerText=this.persons[j]['userUnit'].des
 						
 					}

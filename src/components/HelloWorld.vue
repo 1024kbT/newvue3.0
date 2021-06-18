@@ -109,18 +109,20 @@ export default {
             console.log(111, this.test);
         },
         Sort: function() {
-            console.log()
+            
             const app = this;
             let data = {
                 confSeatList: this.GLOBAL.baseURL,
                 sortType: 1,
             };
+            console.log(this.GLOBAL.baseURL)
             this.$axios
                 .getSort(data)
                 .then((res) => {
                     app.option = res.data.data;
                 })
                 .catch((err) => {});
+                
         },
         insertPeople() {
             

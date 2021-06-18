@@ -30,7 +30,7 @@
             @dragging="onDrag"
             @resizing="onResize"
         >
-            <p>X: {{ x }} / Y: {{ y }} - Width: {{ width }} / Height: {{ height }}</p>
+            <p></p>
         </vue-draggable-resizable>
         <Hello
             v-for="index of 8"
@@ -50,8 +50,8 @@ import children from "./com/children.vue";
 export default {
     data() {
         return {
-            width: 0,
-            height: 0,
+            width: 980,
+            height: 490,
             x: 0,
             y: 0,
             xlist: [],
@@ -78,14 +78,17 @@ export default {
     },
     methods: {
         onDragstop(x, y, width, height) {
-            this.txtList.x1 = x;
-            this.txtList.y1 = y;
+            this.txtList.x1 = x+20;
+            this.txtList.y1 = y+20;
+            this.txtList.y2 = y+this.height+40;
+            this.txtList.x2 = x+this.width;
         },
         onResizstop(x, y, width, height) {
-            this.txtList.x1 = x;
-            this.txtList.y1 = y;
-            this.txtList.x2 = this.width;
-            this.txtList.y2 = this.height;
+            this.txtList.x1 = x+20;
+            this.txtList.y1 = y+20;
+            this.txtList.x2 = x+this.width+20;
+            this.txtList.y2 = y+this.height+20;
+            console.log(this.txtList)
         },
         onResize: function(x, y, width, height) {
             this.x = x;

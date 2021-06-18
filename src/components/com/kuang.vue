@@ -12,7 +12,22 @@
 <script>
 export default {
     name: "Hello",
-    props: ["options", "persons", "txtlist"],
+    props: {
+        txtlist:{
+            type:Object,
+            default:function () {
+            return {
+                x1: 370,
+                y1: 10,
+                x2: 980,
+                y2: 490,
+            }
+            }
+        },
+        persons:Array,
+        options:Object,
+
+    },
     data() {
         return {
             xinxi: [],
@@ -94,7 +109,6 @@ export default {
         },
         txtlist:{
             handler:function(newVal,oldVal){
-                console.log(1111,this.txtlist)
                 this.handleRectSelection(this.txtlist)
             },
             deep:true,

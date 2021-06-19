@@ -7,9 +7,13 @@
           v-for="index of 6"
           :key="index.id"
           draggable="true"
+            @contextmenu.prevent="mousemove()"
+
+          @click="handlePeople($event)"
           @dragstart="handleDrag($event)"
           @drop="handleDrop($event)"
           @dragover="handleDragOver($event)"
+          v-on:dblclick="clear($event)"
         ></div>
       </div>
     </div>
@@ -27,12 +31,14 @@ export default {
           x1: 430,
           y1: 420,
           x2: 1440,
-          y2: 860,
+          y2: 860
         };
       }
     },
     persons: Array,
-    options: Object
+    options: Object,
+    pName: String,
+    flag:Number
   },
   data() {
     return {
@@ -40,14 +46,17 @@ export default {
       items: [],
       seat: [],
       sort: [],
+      planList: [],
       sum: 0,
       lastSeat: [],
-        temp1: null,
-            temp2: "",
+      temp1: null,
+      temp2: "",
+      isshows: true,
     };
   },
   created() {
     const app = this;
+
     this.$axios
       .getDistributeData()
       .then(res => {
@@ -115,16 +124,35 @@ export default {
     },
     txtlist: {
       handler: function(newVal, oldVal) {
-          console.log(this.txtlist)
+        console.log(this.txtlist);
         this.handleRectSelection(this.txtlist);
       },
       deep: true
     }
   },
   methods: {
+      mousemove() {
+            this.$axios.getNoPeople().then((res) => {
+                this.planList = res.data.data;
+            });
+            this.$emit("getList", this.planList);
+        },
+     handlePeople(e) {
+       
+         this.$emit("changeType", this.isshows, this.closeName);
+       
+            if (!this.pName) {
+              console.log();
+              
+            } else {
+                e.currentTarget.innerText = this.pName;
+                e.currentTarget.className =e.currentTarget.className + " choose"
+            }
+            
+            
+        },
     seatSort() {
       var oT1 = document.querySelectorAll(".t1");
-
       for (var i = 0; i < oT1.length; i++) {
         for (var j = 0; j < this.lastSeat.length; j++) {
           if (i == this.lastSeat[j]) {
@@ -190,15 +218,16 @@ export default {
       return !(xNotCross || yNotCross);
     },
     sortPerson() {
-      console.log(this.persons);
       var oT1 = document.querySelectorAll(".t1");
       for (var i = 0; i < oT1.length; i++) {
         for (var j = 0; j < this.lastSeat.length; j++) {
           if (i == this.lastSeat[j]) {
             if (this.persons[j].merge == 0) {
-              oT1[i].className = oT1[i].className + " choose";
-              console.log(oT1[i].className);
-              oT1[i].innerText = this.persons[j]["userUnit"].des;
+              if(this.persons[j]["userUnit"] != null){
+                oT1[i].className = oT1[i].className + " choose";
+                oT1[i].innerText = this.persons[j]["userUnit"].des;
+              }
+              
             } else {
               oT1[i].innerText = "占位";
             }
@@ -212,35 +241,44 @@ export default {
     //   console.log(e.currentTarget);
     //   e.currentTarget.innerText = ''
     // },
-       handleDrag(event) {
-            this.temp1 = event.currentTarget;
-            this.temp2 = event.currentTarget.innerText;
-            //   this.temp1 = event.currentTarget.innerText;
-        },
-        handleDrop(e) {
-            e.preventDefault();
-            if (!e.currentTarget.innerText) {
-                e.currentTarget.innerText = "占位";
-            } else {
-                this.temp1.innerText = e.currentTarget.innerText;
-                e.currentTarget.innerText = this.temp2;
-            }
-        },
-        handleDragOver(e) {
-            e.preventDefault();
-        },
-        onDragend(e) {
-            console.log("结束", e);
-        },
+    handleDrag(event) {
+      this.temp1 = event.currentTarget;
+      this.temp2 = event.currentTarget.innerText;
+      //   this.temp1 = event.currentTarget.innerText;
+    },
+    handleDrop(e) {
+      e.preventDefault();
+      if (!e.currentTarget.innerText) {
+        e.currentTarget.innerText = "占位";
+        e.currentTarget.className = "zhanyong";
+        
+      } else {
+        this.temp1.innerText = e.currentTarget.innerText;
+        e.currentTarget.innerText = this.temp2;
+      }
+    },
+    handleDragOver(e) {
+      e.preventDefault();
+    },
+  
     // 拖拽结束
     // handleDragEnd(){
     //     console.log('拖拽结束');
     // }
+        clear(e) {
+      e.currentTarget.innerText = ''
+      e.currentTarget.className = 't1'
+    }
   }
 };
 </script>
 
 <style scoped>
+.dialog {
+  width: 100px;
+  height: 100px;
+  position: absolute;
+}
 .t1 {
   width: 40px;
   height: 37px;

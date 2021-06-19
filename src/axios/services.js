@@ -17,6 +17,11 @@ const server = {
 	        method: 'post',
 	        data
 	    })
+	},
+	getNoPeople(){
+		return axios('/conference/generatePerson',{
+			method:'post'
+		})
 	}
 };
 

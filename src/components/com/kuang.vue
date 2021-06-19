@@ -140,10 +140,13 @@ export default {
         handleRectSelection(data) {
             var a = "";
             const app = this;
+            
             $(".t1").each(function(index) {
                 var rect = app.getRect($(this));
-                app.xinxi[index]["blockId"] = 1;
                 if (app.isCross(data, rect)) {
+                    app.xinxi[index]["blockId"] = 1;
+                    app.xinxi[index].merge=2
+                    console.log(app.xinxi[index])
                     app.seat.push(index);
                     app.items.push(app.xinxi[index]);
                     $(this).addClass("selected");

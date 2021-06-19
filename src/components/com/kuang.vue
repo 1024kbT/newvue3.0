@@ -1,12 +1,13 @@
 <template>
   <div id="kz" style="display: flex">
     <div v-for="index of 5" class="main" :key="index.id" :gindex="index">
-      <div class="table"></div>
       <div style="display: flex">
         <div
           class="t1"
           v-for="index of 6"
           :key="index.id"
+          draggable="true"
+          @dragstart="handleDrag($event)"
           @drop="handleDrop($event)"
           @dragover="handleDragOver($event)"
         ></div>
@@ -23,10 +24,10 @@ export default {
       type: Object,
       default: function() {
         return {
-          x1: 370,
-          y1: 10,
-          x2: 980,
-          y2: 490
+          x1: 430,
+          y1: 420,
+          x2: 1440,
+          y2: 860,
         };
       }
     },
@@ -40,7 +41,9 @@ export default {
       seat: [],
       sort: [],
       sum: 0,
-      lastSeat: []
+      lastSeat: [],
+        temp1: null,
+            temp2: "",
     };
   },
   created() {
@@ -112,6 +115,7 @@ export default {
     },
     txtlist: {
       handler: function(newVal, oldVal) {
+          console.log(this.txtlist)
         this.handleRectSelection(this.txtlist);
       },
       deep: true
@@ -132,9 +136,8 @@ export default {
             a = r + "-" + w;
             if (this.options[a] != null) {
               oT1[i].innerText = this.options[a];
-              // oT1[i].className += "choose";
             } else {
-              oT1[i].innerText = "已占位";
+              oT1[i].innerText = "占位";
             }
             this.GLOBAL.baseURL[j]["orderMark"] = parseInt(this.options[a]);
           }
@@ -148,20 +151,20 @@ export default {
       $(".t1").each(function(index) {
         var rect = app.getRect($(this));
         if (app.isCross(data, rect)) {
-          var b=0;
+          var b = 0;
           app.xinxi[index]["blockId"] = 1;
-          b=$(this).text()
-          console.log(b)
-          if(b == ''){
-              app.xinxi[index].merge = 0
-          }else{
-              app.xinxi[index].merge = 2;
+          b = $(this).text();
+          if (b != "占位") {
+            app.xinxi[index].merge = 0;
+            $(this).addClass("selected");
+          } else {
+            $(this).addClass("zhanyong");
+            app.xinxi[index].merge = 2;
           }
           app.seat.push(index);
           app.items.push(app.xinxi[index]);
-          $(this).addClass("selected");
         } else {
-        //   $(this).text("");
+          $(this).text("");
           $(this).removeClass("selected");
         }
       });
@@ -193,9 +196,11 @@ export default {
         for (var j = 0; j < this.lastSeat.length; j++) {
           if (i == this.lastSeat[j]) {
             if (this.persons[j].merge == 0) {
+              oT1[i].className = oT1[i].className + " choose";
+              console.log(oT1[i].className);
               oT1[i].innerText = this.persons[j]["userUnit"].des;
             } else {
-              oT1[i].innerText = "已占位";
+              oT1[i].innerText = "占位";
             }
           }
         }
@@ -207,13 +212,26 @@ export default {
     //   console.log(e.currentTarget);
     //   e.currentTarget.innerText = ''
     // },
-    handleDrop(e) {
-      e.preventDefault();
-      e.currentTarget.innerText = "占位";
-    },
-    handleDragOver(e) {
-      e.preventDefault();
-    }
+       handleDrag(event) {
+            this.temp1 = event.currentTarget;
+            this.temp2 = event.currentTarget.innerText;
+            //   this.temp1 = event.currentTarget.innerText;
+        },
+        handleDrop(e) {
+            e.preventDefault();
+            if (!e.currentTarget.innerText) {
+                e.currentTarget.innerText = "占位";
+            } else {
+                this.temp1.innerText = e.currentTarget.innerText;
+                e.currentTarget.innerText = this.temp2;
+            }
+        },
+        handleDragOver(e) {
+            e.preventDefault();
+        },
+        onDragend(e) {
+            console.log("结束", e);
+        },
     // 拖拽结束
     // handleDragEnd(){
     //     console.log('拖拽结束');
@@ -225,38 +243,56 @@ export default {
 <style scoped>
 .t1 {
   width: 40px;
-  height: 20px;
-  margin: 5px;
-  background-color: rgb(135, 145, 153);
+  height: 37px;
+  margin: 3px;
+  font-size: 10px;
+  line-height: 30px;
+  background-image: url("../../assets/默认空位.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
   text-align: center;
   color: #fff;
+  border-radius: 25%;
+  box-shadow: 5px 5px 10px #000;
 }
 .selected {
   width: 40px;
-  height: 20px;
-  margin: 5px;
+  height: 37px;
+  margin: 3px;
+  font-size: 10px;
+  line-height: 30px;
   text-align: center;
   color: #fff;
-  background-color: red;
+  background-image: url("../../assets/框选中.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
-.selects {
-  width: 40px;
-  height: 20px;
-  margin: 5px;
-  text-align: center;
-  color: #fff;
-  background-color: #ff0;
-}
+
 .choose {
-  background-color: #000088;
+  width: 40px;
+  height: 37px;
+  margin: 2px;
+  line-height: 30px;
+  text-align: center;
+  color: #fff;
+  background-image: url("../../assets/已经有人.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
-.table {
-  width: 300px;
-  height: 30px;
-  background-color: rgb(191, 205, 214);
+.zhanyong {
+  width: 40px;
+  height: 37px;
+  margin: 2px;
+  line-height: 30px;
+  text-align: center;
+  color: #fff;
+  background-image: url("../../assets/已经占用但没有人.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
 }
 .main {
-  margin-left: 30px;
-  margin-bottom: 20px;
+  width: 20%;
+  margin: 0 auto;
+  margin-bottom: 10px;
 }
 </style>

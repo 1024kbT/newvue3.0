@@ -1,34 +1,42 @@
 <template>
   <div id="app">
-    <div style="display:flex;">
-      <button
-        @click="Sort"
-        style="position: relative; z-index: 999; width: 150px; height: 30px"
-      >选择区域</button>
-      <button
-        @click="changeVisibility"
-        v-show="isShown"
-        style="position: relative; z-index: 999; width: 150px; height: 30px"
-      >显示</button>
-      <button
-        @click="changeVisibility"
-        v-show="!isShown"
-        style="position: relative; z-index: 999; width: 150px; height: 30px"
-      >隐藏</button>
-      <button
-        @click="insertPeople"
-        style="position: relative; width: 100px; height: 30px; z-index: 998"
-      >导入人员数据</button>
-          <div
-      id="reset"
-      draggable="true"
-      @dragstart="handleDragStart($event)"
-      @dragover.prevent="handleDragOver($event)"
-      @dropstop="handleDrop($event)"
-    >
-      占位
+    <div class="top" ><img src="../assets/画板4.png" alt=""></div>
+    <div style="position:relative;">
+        <div style="display:flex;position:absolute;left:36%;top:60px;">
+            <div v-for="index of 10" :key="index"><img src="../assets/主席台位.png" alt=""></div>
+        </div>
+        <div style="position:absolute;left:35%;top:100px"><img src="../assets/画板13.png" alt=""></div>
     </div>
-      <p style="position:relative;">{{sums}}</p>
+    <div class="banner">
+        <div class="t23">已选的座位数：{{sums}}</div>
+      <div style="display:flex;">
+        <div
+          style="position:absolute;"
+          id="reset"
+          draggable="true"
+          @dragstart="handleDragStart($event)"
+          @dragover.prevent="handleDragOver($event)"
+          @dropstop="handleDrop($event)"
+        >占位</div>
+        <div
+          @click="changeVisibility"
+          v-show="!isShown"
+          class="xianshi"
+        >选择区域</div>
+        <div
+          @click="changeVisibility"
+          v-show="isShown"
+          class="xianshi"
+        >确定区域</div>
+        <div
+          @click="Sort"
+          class="quyu"
+        >排序</div>
+        <div
+          @click="insertPeople"
+          class="daoru"
+        >导入人员数据</div>
+      </div>
     </div>
 
     <!-- 	  <select v-model="index">
@@ -42,7 +50,7 @@
       :h="490"
       :x="370"
       :y="10"
-            v-show="isShown"
+      v-show="isShown"
       :min-width="50"
       :min-height="50"
       :parent="true"
@@ -55,17 +63,20 @@
     >
       <p></p>
     </vue-draggable-resizable>
-    <Hello
-      v-for="index of 8"
-      class="dragbox"
-      :options="option"
-      :selects="sec"
-      @aa="tty"
-      :txtlist="txtList"
-      :key="index"
-      :persons="persons"
-      @showSum="showSums"
-    ></Hello>
+    <div class="hello1">
+        <Hello
+            v-for="index of 8"
+            class="dragbox"
+            :options="option"
+            :selects="sec"
+            @aa="tty"
+            :txtlist="txtList"
+            :key="index"
+            :persons="persons"
+            @showSum="showSums"
+        ></Hello>
+    </div>
+    
   </div>
 </template>
 
@@ -91,7 +102,7 @@ export default {
         x2: 980,
         y2: 490
       },
-      isShown: true
+      isShown: false
     };
   },
   components: {
@@ -102,16 +113,16 @@ export default {
   mounted: function() {},
   methods: {
     onDragstop(x, y, width, height) {
-      this.txtList.x1 = x + 40;
-      this.txtList.y1 = y + 20;
-      this.txtList.y2 = y + this.height + 30;
-      this.txtList.x2 = x + this.width;
+      this.txtList.x1 = x + 10;
+      this.txtList.y1 = y + 180;
+      this.txtList.y2 = y + this.height +130;
+      this.txtList.x2 = x + this.width - 10;
     },
     onResizstop(x, y, width, height) {
-      this.txtList.x1 = x + 20;
-      this.txtList.y1 = y + 20;
-      this.txtList.x2 = x + this.width + 20;
-      this.txtList.y2 = y + this.height + 20;
+      this.txtList.x1 = x + 10;
+      this.txtList.y1 = y + 180;
+      this.txtList.x2 = x + this.width - 10;
+      this.txtList.y2 = y + this.height + 130;
       console.log(this.txtList);
     },
     onResize: function(x, y, width, height) {
@@ -136,6 +147,7 @@ export default {
       console.log(111, this.test);
     },
     Sort: function() {
+      this.isShown = false;
       const app = this;
       let data = {
         confSeatList: this.GLOBAL.baseURL,
@@ -166,14 +178,14 @@ export default {
         })
         .catch(err => {});
     },
-    changeVisibility(){
-        this.isShown = !this.isShown
+    changeVisibility() {
+      this.isShown = !this.isShown;
     },
-        // 拖拽开始
+    // 拖拽开始
     handleDragStart() {
       //   this.dragging = item;
-      console.log('开始拖拽')
-    },
+      console.log("开始拖拽");
+    }
     //首先把div变成可以放置的元素，即重写dragenter/dragover
     // handleDragOver(e) {
     //   e.preventDefault();
@@ -193,10 +205,65 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+#app {
+  background-image: url("../assets/画板3.png");
+  background-repeat: no-repeat;
+}
+.top{
+    position:relative;
+    margin-left: 50px;
+}
 #selectbc {
   background-color: rebeccapurple;
+  overflow: hidden;
 }
-
+.banner{
+    position: relative;
+    height:50px;
+    color: #fff;
+}
+.xianshi{
+    position:absolute;
+    right:270px;
+    top:100px;
+    z-index: 999; 
+    width: 115px; 
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-image: url('../assets/画板9.png');
+    background-repeat: no-repeat;
+}
+.quyu{
+    position: absolute;
+    right:150px;
+    top:100px;
+    z-index: 999; 
+    width: 115px; 
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+    background-image: url('../assets/画板9.png');
+    background-repeat: no-repeat;
+}
+.daoru{
+    position:absolute;
+    right:30px;
+    top:100px;
+    width: 115px; 
+    height: 35px; 
+    z-index: 998;
+    text-align: center;
+    line-height: 35px;
+    background-image: url('../assets/画板9.png');
+    background-repeat: no-repeat;
+}
+.t23{
+    position:absolute;
+    top:200px;
+    left:45%;
+    font-size: 30px;
+}
 .st {
   width: 50px;
   height: 50px;
@@ -218,16 +285,28 @@ img {
 * {
   cursor: default;
 }
+.hello1{
+    margin-left: 30px;
+    margin-top:250px;
+    padding-bottom:100px;
+}
 .dragging1 {
   position: absolute;
   border: 1px solid #000;
   color: #000;
 }
 #reset {
-  width: 100px;
-  height: 30px;
-  line-height: 30px;
+  position:absolute;
+  right:420px;
+  top:100px;
+  width: 50px;
+  height: 47px;
+  line-height: 40px;
   text-align: center;
-  background-color: gray;
+  background-image: url("../assets/已经占用但没有人.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  font-size: 10px;
+  color: #fff;
 }
 </style>

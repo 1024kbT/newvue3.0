@@ -165,14 +165,14 @@ export default {
         onDragstop(x, y, width, height) {
             this.txtList.x1 = x + 10;
             this.txtList.y1 = y + 180;
-            this.txtList.y2 = y + this.height + 130;
+            this.txtList.y2 = y + this.height + 110;
             this.txtList.x2 = x + this.width - 10;
         },
         onResizstop(x, y, width, height) {
             this.txtList.x1 = x + 10;
             this.txtList.y1 = y + 180;
             this.txtList.x2 = x + this.width - 10;
-            this.txtList.y2 = y + this.height + 130;
+            this.txtList.y2 = y + this.height + 110;
         },
         onResize: function(x, y, width, height) {
             this.x = x;

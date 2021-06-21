@@ -124,7 +124,6 @@ export default {
     },
     txtlist: {
       handler: function(newVal, oldVal) {
-        console.log(this.txtlist);
         this.handleRectSelection(this.txtlist);
       },
       deep: true
@@ -316,6 +315,7 @@ export default {
   background-image: url("../../assets/已经有人.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  overflow: hidden;
 }
 .zhanyong {
   width: 40px;

@@ -19,7 +19,6 @@
                         @drop="handleDrop($event)"
                         @dragover="handleDragOver($event)"
                         @click="handlePeople($event)"
-                        v-on:dblclick="clear($event)"
                     ></span>
                 </div>
             </div>
@@ -268,26 +267,16 @@ export default {
         handleDragOver(e) {
             e.preventDefault();
         },
-
         // 拖拽结束
         // handleDragEnd(){
         //     console.log('拖拽结束');
         // }
-        clear(e) {
-            // console.log(e)
-            // //       e.currentTarget.innerText = `<span class="context"></span>`
-            e.currentTarget.innerText = "";
-            // //       e.currentTarget.innerHTML = "<span class='context'></span>"
-            e.currentTarget.className = "context";
-            e.currentTarget.parentElement.className = "t1";
-            console.log(e.currentTarget.parentElement);
-
-            // if(e.stopPropagation) { //W3C阻止冒泡方法
-            //         e.stopPropagation();
-            //     } else {
-            //         e.cancelBubble = true; //IE阻止冒泡方法
-            //     }
-        },
+        // clear(e) {
+        //     e.currentTarget.innerText = "";
+        //     e.currentTarget.className = "context";
+        //     e.currentTarget.parentElement.className = "t1";
+        //     console.log(e.currentTarget.parentElement);
+        // },
     },
 };
 </script>

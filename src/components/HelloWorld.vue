@@ -93,7 +93,6 @@
       v-show="isShown"
       :min-width="50"
       :min-height="50"
-      :parent="true"
       :grid="[10, 10]"
       @resizestop="onResizstop"
       @dragstop="onDragstop"
@@ -225,7 +224,50 @@ export default {
 
       this.peopleName = closename;
     },
+    handleRectSelection(data) {
+            var a = "";
+            const app = this;
 
+            $(".grid").each(function(index) {
+                var rect = app.getRect($(this));
+                if (app.isCross(data, rect)) {
+                    var b = 0;
+                    //app.xinxi[index]["blockId"] = 1;
+                    b = $(this).text();
+                    if (b != "占位") {
+                        //app.xinxi[index].merge = 0;
+                        $(this).addClass("selected");
+                    } else {
+                        $(this).addClass("zhanyong");
+                        //app.xinxi[index].merge = 2;
+                    }
+                    //app.seat.push(index);
+                    //app.items.push(app.xinxi[index]);
+                } else {
+                    //$(this).text("");
+                    $(this).removeClass("selected");
+                }
+            });
+            //app.sum = app.items.length;
+            //app.$emit("showSum", app.sum);
+            //app.lastSeat = app.seat;
+            //app.seat = [];
+            //app.items = [];
+        },
+    getRect($el) {
+            var x1 = $el.offset().left;
+            var y1 = $el.offset().top;
+            var x2 = x1 + $el.outerWidth();
+            var y2 = y1 + $el.outerHeight();
+            return { x1, x2, y1, y2 };
+        },
+    isCross(rect1, rect2) {
+            var xNotCross = true; //x方向上不重合
+            var yNotCross = true; //y方向上不重合
+            xNotCross = rect1.x1 > rect2.x2 || rect2.x1 > rect1.x2;
+            yNotCross = rect1.y1 > rect2.y2 || rect2.y1 > rect1.y2;
+            return !(xNotCross || yNotCross);
+        },
     getList(p) {
       this.planList = p;
     },
@@ -250,6 +292,7 @@ export default {
       this.txtList.y2 = y + this.height + 110;
 
       this.txtList.x2 = x + this.width - 10;
+      this.handleRectSelection(this.txtList)
     },
 
     onResizstop(x, y, width, height) {
@@ -260,6 +303,7 @@ export default {
       this.txtList.x2 = x + this.width - 10;
 
       this.txtList.y2 = y + this.height + 110;
+      this.handleRectSelection(this.txtList)
     },
 
     onResize: function(x, y, width, height) {
@@ -404,6 +448,11 @@ export default {
   border: 1px solid black;
 
   z-index: 100px;
+}
+.selected {
+    background-image:url('../assets/画板 33.png');
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
 }
 .zhuxitai{
     position: relative;

@@ -155,31 +155,6 @@ export default {
                 //e.currentTarget.className =e.currentTarget.className + " choose"
             }
         },
-        seatSort() {
-            var oT1 = document.querySelectorAll(".t1");
-            var oSpan = document.querySelectorAll(".context");
-            console.log(oSpan);
-            for (var i = 0; i < oT1.length; i++) {
-                for (var j = 0; j < this.lastSeat.length; j++) {
-                    if (i == this.lastSeat[j]) {
-                        var a = "";
-                        var r,
-                            w = 0;
-                        r = Math.ceil((i + 1) / 30);
-                        w = parseInt((i + 1) % 30);
-                        a = r + "-" + w;
-                        if (this.options[a] != null) {
-                            //oT1[i].innerText = this.options[a];
-
-                            oSpan[i].innerText = this.options[a];
-                        } else {
-                            oT1[i].innerText = "占位";
-                        }
-                        this.GLOBAL.baseURL[j]["orderMark"] = parseInt(this.options[a]);
-                    }
-                }
-            }
-        },
         handleRectSelection(data) {
             var a = "";
             const app = this;

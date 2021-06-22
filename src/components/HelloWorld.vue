@@ -119,7 +119,10 @@
         @dblclick="reset($event)"
         :key="item.id"
         :data-id="index"
-        :class="{ grid: item.type == 1, guodao: item.type != 1 }"
+        :data-index = "item.id"
+        :data-type = "item.type"
+        class="grid"
+        :class="{  guodao: item.type != 1 }"
          draggable="true"
                 @dragstart="onDragstart($event)"
                 @dragend="onDragend($event)"
@@ -127,7 +130,7 @@
                 @dragover="onDragover($event)"
 
       >
-        {{ item.id }}
+        {{item.id}}
       </div>
     </div>
     <!-- 右键菜单 -->
@@ -171,7 +174,13 @@ export default {
       temp: "",
       flag: 1,
       menuVisible: false,
-      ownStatus: false // 占位按钮开关状态
+      ownStatus: false, // 占位按钮开关状态,
+      xinxi:[],
+      seat:[],
+      lastSeat:[],
+      lastXinxi:[],
+      indexList:[],
+      lastIndex:[]
     };
   },
   components: {
@@ -248,25 +257,30 @@ export default {
       this.isshows = payload;
       this.peopleName = closename;
     },
+    // 框选方法
     handleRectSelection(data) {
       var a = "";
       const app = this;
 
       $(".grid").each(function (index) {
         var rect = app.getRect($(this));
+        
         if (app.isCross(data, rect)) {
+          //console.log($(this).attr('data-index'));
           var b = 0;
-          //app.xinxi[index]["blockId"] = 1;
+            app.charList[index]["blockId"] = 1;
           b = $(this).text();
           if (b != "占位") {
-            //app.xinxi[index].merge = 0;
+            app.charList[index].merge = 0;
             $(this).addClass("selected");
           } else {
             $(this).addClass("zhanyong");
-            //app.xinxi[index].merge = 2;
+            app.charList[index].merge = 2;
           }
-          //app.seat.push(index);
-          //app.items.push(app.xinxi[index]);
+          app.indexList.push($(this).attr('data-index'))
+          app.seat.push(index);
+          app.xinxi.push(app.charList[index]);
+          
         } else {
           //$(this).text("");
           $(this).removeClass("selected");
@@ -274,9 +288,13 @@ export default {
       });
       //app.sum = app.items.length;
       //app.$emit("showSum", app.sum);
-      //app.lastSeat = app.seat;
-      //app.seat = [];
-      //app.items = [];
+      app.lastSeat = app.seat;
+      app.lastXinxi=app.xinxi;
+      app.lastIndex=app.indexList;
+      app.seat = [];
+      app.xinxi = [];
+      app.indexList=[];
+      console.log(app.lastIndex)
     },
     getRect($el) {
       var x1 = $el.offset().left;
@@ -357,8 +375,9 @@ export default {
     Sort: function () {
       this.isShown = false;
       const app = this;
+      
       let data = {
-        confSeatList: this.GLOBAL.baseURL,
+        confSeatList: app.lastXinxi,
         sortType: 1
       };
 
@@ -366,10 +385,42 @@ export default {
         .getSort(data)
         .then(res => {
           app.option = res.data.data;
+          this.seatSort();
         })
         .catch(err => { });
     },
+    // 排序
+     seatSort() {
+            var oT1 = document.querySelectorAll(".grid");
+            // console.log(oT1.attributes.data-type.nodeValue)
+            for (var i = 0; i < oT1.length; i++) {
+              // console.log(i)
+                for (var j = 0; j < this.lastSeat.length; j++) {
+                  // console.log(j);
+                    if (i == this.lastSeat[j]) {
+                      // console.log(`${i}-${j}`)
+                      // console.log( oT1[0].attributes['data-type']);
+                      var dataType=oT1[i].getAttribute('data-type');
 
+                      // console.log(oT1[0].attributes['data-type'].substring(5,6))
+                      if(dataType == 1){
+                        if (this.option[this.lastIndex[j]]) {
+                                                // console.log(`${i}-${j}`)
+                            // console.log(this.option[this.lastIndex[j]])
+                            oT1[i].innerText = this.option[this.lastIndex[j]];
+                            this.lastXinxi[j].orderMark=this.option[this.lastIndex[j]]
+                        } else {
+
+                              oT1[i].innerText = "占位";
+                         }
+                      }
+                        
+                        
+                        
+                    }
+                }
+            }
+        },
     insertPeople() {
       let data = {
         blocks: [
@@ -378,15 +429,40 @@ export default {
             num: 1
           }
         ],
-        confSeats: this.GLOBAL.baseURL
+        confSeats: this.lastXinxi
       };
       this.$axios
         .getPeople(data)
         .then(res => {
           this.persons = res.data.data.confSeats;
+          this.sortPerson()
         })
         .catch(err => { });
+        
     },
+    sortPerson() {
+            var oT1 = document.querySelectorAll(".grid");
+            for (var i = 0; i < oT1.length; i++) {
+                for (var j = 0; j < this.lastSeat.length; j++) {
+                    if (i == this.lastSeat[j]) {
+                      var dataType=oT1[i].getAttribute('data-type');
+
+                      // console.log(oT1[0].attributes['data-type'].substring(5,6))
+                      if(dataType == 1){
+                        if (this.persons[j].merge == 0) {
+                            if (this.persons[j]["userUnit"] != null) {
+                                // oT1[i].className = oT1[i].className + " choose";
+                                oT1[i].innerText = this.persons[j]["userUnit"].name;
+                                console.log(this.persons[j]['userUnit'].name)
+                            }
+                        } else {
+                            oT1[i].innerText = "占位";
+                        }
+                      }
+                    }
+                }
+            }
+        },
     changeVisibility() {
       this.isShown = !this.isShown;
     },
@@ -443,7 +519,8 @@ export default {
       this.ownStatus = !this.ownStatus
       console.log(this.ownStatus);
     }
-  }
+  },
+  
 };
 </script>
 

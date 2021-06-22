@@ -114,12 +114,18 @@
     <!-- 座位及过道 -->
     <div class="xstyle">
       <div
-        v-for="item of charList"
+        v-for="(item,index) of charList"
         @click="own($event)"
         @dblclick="reset($event)"
         :key="item.id"
-        :datat-id="item.id"
+        :data-id="index"
         :class="{ grid: item.type == 1, guodao: item.type != 1 }"
+         draggable="true"
+                @dragstart="onDragstart($event)"
+                @dragend="onDragend($event)"
+                @drop="onDrop($event)"
+                @dragover="onDragover($event)"
+
       >
         {{ item.id }}
       </div>
@@ -188,6 +194,51 @@ export default {
   mounted: function () { },
 
   methods: {
+     //初次拖动获取 拖动的索引id
+
+        onDragstart(event) {
+
+            this.stargindex = event.target.getAttribute("data-id");
+
+            console.log(this.stargindex);
+
+        },
+
+        //经过容器内部
+
+        onDragover(event) {
+
+            event.preventDefault();
+
+        },
+
+        //鼠标落下获取其容器的id
+
+        onDrop(event) {
+
+            this.endIndex = event.target.getAttribute("data-id");
+
+            console.log(this.endIndex);
+
+        },
+
+        //完成拖动实现交换数组
+
+        onDragend(event) {
+
+            let StartObj = this.charList[this.stargindex];
+
+            let EndObj = this.charList[this.endIndex];
+
+            this.charList.splice(this.endIndex, 1, StartObj);
+
+            this.charList.splice(this.stargindex, 1, EndObj);
+
+        },
+
+
+
+
     closes() {
       this.isshows = false;
     },

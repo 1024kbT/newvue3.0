@@ -1,20 +1,18 @@
 <template>
-  <div id="app">
-    
-
+  <div id="app" @contextmenu.prevent="rightClick($event)">
     <div class="tubiao">
-      <div class="tubiao-weizhi" style="margin-left: 80px;">
+      <div class="tubiao-weizhi" style="margin-left: 80px">
         <div
           style="
-
             color: rgb(239, 159, 94);
 
             margin-right: 80px;
 
             padding-left: 10px;
-
           "
-        >空位</div>
+        >
+          空位
+        </div>
 
         <div>
           <img src="../assets/画板 32.png" alt />
@@ -38,16 +36,14 @@
       </div>
     </div>
     <div style="position: absolute; left: 35%; top: 60px">
-        <span class="mainTai">主席台</span>
-      </div>
+      <span class="mainTai">主席台</span>
+    </div>
     <div class="zhuxitai">
       <div style="display: flex; position: absolute; left: 36%; top: 20px">
         <div v-for="index of 10" :key="index">
           <img src="../assets/画板 32.png" alt />
         </div>
       </div>
-
-      
     </div>
 
     <div class="banner">
@@ -61,11 +57,17 @@
           @dragstart="handleDragStart($event)"
           @dragover.prevent="handleDragOver($event)"
           @dropstop="handleDrop($event)"
-        >占位</div>
+        >
+          占位
+        </div>
 
-        <div @click="changeVisibility" v-show="!isShown" class="xianshi">选择区域</div>
+        <div @click="changeVisibility" v-show="!isShown" class="xianshi">
+          选择区域
+        </div>
 
-        <div @click="changeVisibility" v-show="isShown" class="xianshi">确定区域</div>
+        <div @click="changeVisibility" v-show="isShown" class="xianshi">
+          确定区域
+        </div>
 
         <div @click="Sort" class="quyu">排序</div>
 
@@ -93,7 +95,6 @@
       v-show="isShown"
       :min-width="50"
       :min-height="50"
-      :parent="true"
       :grid="[10, 10]"
       @resizestop="onResizstop"
       @dragstop="onDragstop"
@@ -103,100 +104,81 @@
     >
       <p></p>
     </vue-draggable-resizable>
-
     <div class="dialog" v-show="isshows">
       <button class="close" @click="closes">x</button>
-
       <ul class="ullist">
         <li
           v-for="(item, index) of planList"
           :key="item.id"
           :data-id="index"
           class="itemli"
-          @click="replaceInfo($event)"
-        >{{ item.des }}</li>
+          @click="replaceInfo()"
+        >
+          {{ item.des }}
+        </li>
       </ul>
-
       <!-- <button @click="replaceName($event)">添加</button> -->
     </div>
-
+    <!-- 座位及过道 -->
     <div class="xstyle">
       <div
         v-for="item of charList"
         :key="item.id"
         :datat-id="item.id"
         :class="{ grid: item.type == 1, guodao: item.type != 1 }"
-      >{{item.id}}</div>
+      >
+        {{ item.id }}
+      </div>
+    </div>
+    <!-- 右键菜单 -->
+    <div v-show="menuVisible">
+      <ul id="menu" class="menu">
+        <li class="menu__item">重置</li>
+        <li class="menu__item">占位</li>
+      </ul>
     </div>
   </div>
 </template>
-
-
-
 <script>
 import Hello from "./com/kuang.vue";
-
 import children from "./com/children.vue";
-
 import { HappyScroll } from "vue-happy-scroll";
-
+import menu from './com/menu.vue'
 export default {
   data() {
     return {
       width: 980,
-
       height: 490,
-
       x: 0,
-
       y: 0,
-
       peopleName: "",
-
       xlist: [],
-
       sec: null,
-
       index: 1,
-
       option: {},
-
       sums: 0,
-
       persons: [],
-
       charList: [],
-
       txtList: {
         x1: 370,
-
         y1: 200,
-
         x2: 950,
-
         y2: 490
       },
-
       planList: [],
-
       isShown: false,
-
       isshows: false,
-
       temp: "",
-
-      flag: 1
+      flag: 1,
+      menuVisible: false
     };
   },
-
   components: {
     Hello,
-
     children,
-
-    HappyScroll
+    HappyScroll,
+    menu
   },
-
   created() {
     this.$axios
 
@@ -206,12 +188,12 @@ export default {
         this.charList = res.data.data.confSeats;
       })
 
-      .catch(function(res) {
+      .catch(function (res) {
         console.log(res.data);
       });
   },
 
-  mounted: function() {},
+  mounted: function () { },
 
   methods: {
     closes() {
@@ -262,7 +244,7 @@ export default {
       this.txtList.y2 = y + this.height + 110;
     },
 
-    onResize: function(x, y, width, height) {
+    onResize: function (x, y, width, height) {
       this.x = x;
 
       this.y = y;
@@ -272,13 +254,13 @@ export default {
       this.height = height;
     },
 
-    onDrag: function(x, y) {
+    onDrag: function (x, y) {
       this.x = x;
 
       this.y = y;
     },
 
-    tty(a) {},
+    tty(a) { },
 
     showSums(data) {
       this.sums = data;
@@ -294,7 +276,7 @@ export default {
       console.log(111, this.test);
     },
 
-    Sort: function() {
+    Sort: function () {
       this.isShown = false;
 
       const app = this;
@@ -313,7 +295,7 @@ export default {
           app.option = res.data.data;
         })
 
-        .catch(err => {});
+        .catch(err => { });
     },
 
     insertPeople() {
@@ -337,7 +319,7 @@ export default {
           this.persons = res.data.data.confSeats;
         })
 
-        .catch(err => {});
+        .catch(err => { });
     },
 
     changeVisibility() {
@@ -348,7 +330,7 @@ export default {
 
     handleDragStart() {
       //   this.dragging = item;
-    }
+    },
 
     //首先把div变成可以放置的元素，即重写dragenter/dragover
 
@@ -375,6 +357,35 @@ export default {
     //   e.currentTarget.innerText = ''
 
     // }
+    // 实现右键菜单
+    rightClick(event) {
+      console.log('rightClick');
+      this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
+      this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
+      var menu = document.querySelector('#menu');
+      this.styleMenu(menu);
+    },
+    foo() {
+      // 取消鼠标监听事件 菜单栏
+      this.menuVisible = false;
+      document.removeEventListener('click', this.foo); // 要及时关掉监听，不关掉的是一个坑，不信你试试，虽然前台显示的时候没有啥毛病，加一个alert你就知道了
+    },
+    styleMenu(menu) {
+      if (event.clientX > 1800) {
+        menu.style.left = event.clientX - 100 + 'px';
+      } else {
+        menu.style.left = event.clientX + 1 + 'px';
+      }
+      document.addEventListener('click', this.foo); // 给整个document新增监听鼠标事件，点击任何位置执行foo方法
+      if (event.clientY > 700) {
+        menu.style.top = event.clientY - 30 + 'px';
+      } else {
+        menu.style.top = event.clientY - 10 + 'px';
+      }
+    },
+    doubleClick(e) {
+      console.log(e);
+    }
   }
 };
 </script>
@@ -405,8 +416,8 @@ export default {
 
   z-index: 100px;
 }
-.zhuxitai{
-    position: relative;
+.zhuxitai {
+  position: relative;
 }
 .mainTai {
   position: relative;
@@ -455,9 +466,9 @@ export default {
 .tubiao {
   display: flex;
 
-  position:relative;
+  position: relative;
 
-  width:30%;
+  width: 30%;
 }
 
 #app {
@@ -646,11 +657,9 @@ img {
 
   height: 50px;
 
-  
-
   margin-bottom: 20px;
 
-  background-image: url('../assets/画板 32.png');
+  background-image: url("../assets/画板 32.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
@@ -662,8 +671,6 @@ img {
 
   margin-bottom: 20px;
 
-  
-
   box-sizing: border-box;
 
   background: #8a4631;
@@ -673,8 +680,6 @@ img {
   padding-left: 30px;
 
   margin-top: 100px;
-
-  
 }
 
 .dragging1 {
@@ -700,8 +705,6 @@ img {
 
   text-align: center;
 
- 
-
   background-size: 100% 100%;
 
   background-repeat: no-repeat;
@@ -710,5 +713,34 @@ img {
 
   color: #fff;
 }
+/* 右键菜单样式 */
+.menu__item {
+  display: block;
+  line-height: 20px;
+  text-align: center;
+  margin: 10px;
+  cursor: default;
+}
+.menu__item:hover {
+  color: #ff0000;
+}
+
+.menu {
+  height: auto;
+  width: auto;
+  position: absolute;
+  font-size: 14px;
+  text-align: left;
+  border-radius: 10px;
+  border: 1px solid #c1c1c1;
+  background-color: #ffffff;
+  padding-left: 0;
+}
+
+li:hover {
+  background-color: #e0e0e2;
+  color: white;
+}
+/* 右键菜单样式 结束 */
 </style>
 

@@ -1,11 +1,11 @@
 import axios from "./axios";
 import url from "./index";
 const server = {
-    // getList() {
-    //     return axios("/conference/findByConfId/1", {
-    //         method: "get",
-    //     });
-    // },
+    getLists() {
+        return axios("/conference/findAllPerson", {
+            method: "get",
+        });
+    },
     getDistributeData() {
         return axios("/conference/findByConfId/1", {
             method: "get",

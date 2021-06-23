@@ -28,6 +28,12 @@ const server = {
             method: "post",
         });
     },
+    getNewPerson(data){
+        return axios('/conference/deleteAndFill',{
+            method:"post",
+            data,
+        })
+    }
 };
 
 export default server;

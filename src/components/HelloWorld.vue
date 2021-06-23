@@ -415,7 +415,7 @@ export default {
         sortPerson() {
             var oT1 = document.querySelectorAll(".grid");
             for (var i = 0; i < oT1.length; i++) {
-                for (var j = 0; j < this.sortIndex.length; j++) {
+                for (var j = 0; j < this.persons.length; j++) {
                     if (i == this.sortIndex[j]) {
                         var dataType = oT1[i].getAttribute("data-type");
                         if (dataType == 1) {
@@ -471,9 +471,27 @@ export default {
         },
         // 重置
         reset(e) {
-            console.log(e);
-            e.currentTarget.innerText = "";
-            e.currentTarget.className = "grid";
+            console.log(this.persons);
+            var delIndex = e.target.getAttribute('data-index');
+            var delPerson ={}
+            for(var i = 0;i<this.persons.length;i++){
+              if(this.persons[i].id==delIndex){
+                delPerson=this.persons[i]
+              }
+            }
+            let data={
+              id:1,
+              confSeat:delPerson,
+              confSeats:this.persons
+            }
+            this.$axios.getNewPerson(data).then(res=>{
+              console.log(res.data);
+              
+            }).catch(res=>{
+
+            })
+            
+            
         },
          // 占位和人员替换
         own(e) {

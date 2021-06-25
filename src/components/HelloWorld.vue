@@ -49,10 +49,10 @@
     <div class="t23">已选的座位数：<span style="color:#ef7621;">{{ sums }}</span></div>
     <div @click="toggleUnit()" class="change-person"><span class="cg"><img src="../assets/change.png" alt=""></span><span class="wenzi">{{ showUnit ? "显示单位" : "显示人员" }}</span></div>
     <div class="zhuxitai">
-      <div style="position: absolute; left: 35%; top: 0px">
+      <div class="zhuxitai-context">
       <span class="mainTai">主席台</span>
     </div>
-      <div style="display: flex; position: absolute; left: 33%; top: 50px">
+      <div class="zhuxitai-img">
         <div v-for="index of 10" :key="index" class="zhuxitai-seat">
           <img src="../assets/画板 32.png" alt />
         </div>
@@ -190,7 +190,7 @@ export default {
   },
   created() {
     this.$axios
-      .getLists()
+      .getNoPeople()
       .then(res => {
         this.peopleList = res.data.data;
       })
@@ -219,7 +219,7 @@ export default {
     },
        //保存替换人员姓名的变量
     replaceInfo(e) {
-      this.persons[this.replaceIndex].userUnit.name = e.name;
+      this.persons[this.replaceIndex].userUnit = e;
       this.persons.splice(
         this.replaceIndex,
         1,
@@ -319,16 +319,16 @@ export default {
  
     onDragstop(x, y, width, height) {
       this.txtList.x1 = x + 10;
-      this.txtList.y1 = y + 150;
-      this.txtList.y2 = y + this.height + 100;
+      this.txtList.y1 = y + 210;
+      this.txtList.y2 = y + this.height + 180;
       this.txtList.x2 = x + this.width - 10;
       this.handleRectSelection(this.txtList);
     },
     onResizstop(x, y, width, height) {
       this.txtList.x1 = x + 10;
-      this.txtList.y1 = y + 150;
+      this.txtList.y1 = y + 210;
       this.txtList.x2 = x + this.width - 10;
-      this.txtList.y2 = y + this.height + 100;
+      this.txtList.y2 = y + this.height + 180;
       this.handleRectSelection(this.txtList);
     },
     onResize: function(x, y, width, height) {
@@ -395,6 +395,7 @@ export default {
     },
     // 排序
     seatSort() {
+      var a=0;
       var oT1 = document.querySelectorAll(".grid");
       // console.log(oT1.attributes.data-type.nodeValue)
       for (var i = 0; i < oT1.length; i++) {
@@ -415,6 +416,7 @@ export default {
                     oT1[i].innerText = this.option[this.lastIndex[j]];
                     this.lastXinxi[j].orderMark = this.option[this.lastIndex[j]];
                     oT1[i].className = 'grid selected';
+                    
                   } else {
                     oT1[i].innerText = "";
                     oT1[i].className = 'grid'
@@ -427,6 +429,7 @@ export default {
           }
         }
       }
+      
     },
     insertPeople() {
       let data = {
@@ -464,8 +467,9 @@ export default {
                   oT1[i].setAttribute(
                     "unit",
                     this.persons[j]["userUnit"].unitName
+                    
                   );
-                  a = a+1
+                  a++;
                 }
               } else {
                 oT1[i].innerText = "占位";
@@ -646,8 +650,12 @@ export default {
   background-size: 100% 100%;
 }
 .zhuxitai {
-  position: relative;
+  width:550px;
+  margin:0 auto;
   margin-top: 30px;
+}
+.zhuxitai .zhuxitai-img{
+  display: flex;
 }
 .zhuxitai-seat img{
   width: 55px;
@@ -792,7 +800,7 @@ img {
   height:600px;
   overflow-x: scroll;
   display: grid;
-  margin: 10rem 0 0 0;
+  margin: 3rem 0 0 0;
   padding: 0 1rem 0 1rem;
   grid-template-columns: repeat(34, auto);
   grid-template-rows: repeat(8, auto);

@@ -48,13 +48,13 @@
       </div>
     </div>
     <div class="t23">已选的座位数：{{ sums }}</div>
-    <div @click="toggleUnit()" class="change-person">{{ showUnit ? "显示单位" : "显示人员" }}</div>
+    <div @click="toggleUnit()" class="change-person"><span class="cg"><img src="../assets/change.png" alt=""></span><span class="wenzi">{{ showUnit ? "显示单位" : "显示人员" }}</span></div>
     <div class="zhuxitai">
       <div style="position: absolute; left: 35%; top: 0px">
       <span class="mainTai">主席台</span>
     </div>
       <div style="display: flex; position: absolute; left: 33%; top: 50px">
-        <div v-for="index of 10" :key="index">
+        <div v-for="index of 10" :key="index" class="zhuxitai-seat">
           <img src="../assets/画板 32.png" alt />
         </div>
       </div>
@@ -602,12 +602,12 @@ export default {
   .sample-inner:nth-child(3) {
     padding-left: 30px;
     display: flex;
-    line-height: 50px;
+    line-height: 40px;
   }
   .sample-inner:nth-child(1) {
     padding-left: 10px;
     display: flex;
-    line-height:50px;
+    line-height:40px;
   }
   .sample-inner {
     .sample-text {
@@ -618,8 +618,8 @@ export default {
       margin-left: 10px;
     }
     .sample-pic img {
-      width:50px;
-      height: 50px;
+      width:40px;
+      height: 40px;
     }
   }
 }
@@ -650,6 +650,10 @@ export default {
 .zhuxitai {
   position: relative;
   margin-top: 30px;
+}
+.zhuxitai-seat img{
+  width: 55px;
+  height: 55px;
 }
 .mainTai {
   position: relative;
@@ -710,7 +714,8 @@ export default {
 }
 .change-person {
   position: absolute;
-  right:20px;
+  top:220px;
+  right:42px;
   width: 115px;
   height: 35px;
   text-align: center;
@@ -718,6 +723,13 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
+}
+.change-person span:nth-child(1) img{
+  margin-right:10px;
+}
+.change-person .wenzi{
+  font-weight: bold;
+  color: rgb(0, 103, 165);
 }
 .quyu {
   z-index: 999;
@@ -741,7 +753,7 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
-  margin-right:20px;
+  margin-right:40px;
 }
 .t23 {
   position: absolute;

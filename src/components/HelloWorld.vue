@@ -30,7 +30,7 @@
           @dragstart="handleDragStart($event)"
           @dragover.prevent="handleDragOver($event)"
           @dropstop="handleDrop($event)"
-        >{{this.ownStatus?'关闭':'批量占位'}}</div>
+        >{{this.ownStatus?'关闭':'占位'}}</div>
         <div @click="changeVisibility" class="xianshi">{{this.isShown?'确定区域':'选择区域'}}</div>
         <div class="quyu">
           <el-select v-model="index" placeholder="请选择规则" class="section" @change="Sort">
@@ -100,7 +100,6 @@
         v-for="(item, index) of charList"
         @contextmenu.prevent="rightClick($event)"
         @click="own($event)"
-        @dblclick="reset($event)"
         :key="item.id"
         :data-id="index"
         :data-index="item.id"
@@ -120,7 +119,7 @@
     <!-- 右键菜单 -->
     <div v-show="menuVisible">
       <ul id="menu" class="menu">
-        <li class="menu__item" @click="rcReset()">重置</li>
+        <li class="menu__item" @click="rcReset()">清空</li>
         <li class="menu__item" @click='rcOwn()'>占位</li>
         <li class="menu__item" @click="replacePeople($event)">替换</li>
       </ul>
@@ -354,7 +353,9 @@ export default {
       console.log(111, this.test);
     },
     Sort: function() {
-      // this.isShown = false;  
+      // this.isShown = false; 
+      this.sortMessage=[];
+      this.sortIndex=[]; 
       const app = this;
       var oT1 = document.querySelectorAll(".grid");
       if (JSON.stringify(app.lastXinxi) == "[]") {
@@ -413,6 +414,7 @@ export default {
                   if (this.option[this.lastIndex[j]] != null) {
                     oT1[i].innerText = this.option[this.lastIndex[j]];
                     this.lastXinxi[j].orderMark = this.option[this.lastIndex[j]];
+                    oT1[i].className = 'grid selected';
                   } else {
                     oT1[i].innerText = "";
                     oT1[i].className = 'grid'
@@ -510,11 +512,6 @@ export default {
     },
     doubleClick(e) {
       console.log(e);
-    },
-    // 重置
-    reset(e) {  
-      e.currentTarget.innerText = "";
-      e.currentTarget.className = "grid";
     },
     // 右键菜单重置
     rcReset(){
@@ -626,6 +623,7 @@ export default {
 .close {
         position: absolute;
         left: 180px;
+        width: 20px;
         z-index: 999;
     }
 .section{
@@ -810,6 +808,9 @@ img {
   background-image: url("../assets/画板 32.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .guodao {
   width: 20px;

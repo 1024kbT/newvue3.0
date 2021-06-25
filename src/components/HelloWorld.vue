@@ -1,40 +1,29 @@
 <template>
   <div id="app" @contextmenu.prevent="rightClick($event)">
-    <div class="sample">
-      <div class="sample-inner">
-        <div class="sample-text">空位</div>
-        <div class="sample-pic">
-          <img src="../assets/画板 32.png" />
+    <div class="gongnengqu">
+      <div class="sample">
+        <div class="sample-inner">
+          <div class="sample-text">空位:</div>
+          <div class="sample-pic">
+            <img src="../assets/画板 32.png" />
+          </div>
+        </div>
+        <div class="sample-inner">
+          <div class="sample-text">已有人:</div>
+          <div class="sample-pic">
+            <img src="../assets/画板 34.png" />
+          </div>
+        </div>
+        <div class="sample-inner">
+          <div class="sample-text">已占用:</div>
+          <div class="sample-pic">
+            <img src="../assets/画板 35.png" />
+          </div>
         </div>
       </div>
-      <div class="sample-inner">
-        <div class="sample-text">已有人</div>
-        <div class="sample-pic">
-          <img src="../assets/画板 34.png" />
-        </div>
-      </div>
-      <div class="sample-inner">
-        <div class="sample-text">已占用</div>
-        <div class="sample-pic">
-          <img src="../assets/画板 35.png" />
-        </div>
-      </div>
-    </div>
-    <div style="position: absolute; left: 37%; top: 60px">
-      <span class="mainTai">主席台</span>
-    </div>
-    <div class="zhuxitai">
-      <div style="display: flex; position: absolute; left: 35%; top: 20px">
-        <div v-for="index of 10" :key="index">
-          <img src="../assets/画板 32.png" alt />
-        </div>
-      </div>
-    </div>
-    <div class="banner">
-      <div class="t23">已选的座位数：{{ sums }}</div>
-      <div style="display: flex">
+      
+      <div class="head_right">
         <div
-          style="position: absolute"
           id="reset"
           draggable="true"
           :class="{ ownActive: ownStatus }"
@@ -43,22 +32,36 @@
           @dragover.prevent="handleDragOver($event)"
           @dropstop="handleDrop($event)"
         >占位</div>
-        <div @click="toggleUnit()" class="change-person">{{ showUnit ? "显示单位" : "显示人员" }}</div>
         <div @click="changeVisibility" v-show="!isShown" class="xianshi">选择区域</div>
         <div @click="changeVisibility" v-show="isShown" class="xianshi">确定区域</div>
-        <div @click="Sort" class="quyu">
-          <el-select v-model="value" placeholder="请选择规则" class="section">
+        <div class="quyu">
+          <el-select v-model="index" placeholder="请选择规则" class="section" @change="Sort">
             <el-option
               v-for="item in options"
               :key="item.value"
               :label="item.label"
-              :value="item.value">
+              :value="item.value"
+               
+              >
             </el-option>
           </el-select>
         </div>
         <div @click="insertPeople" class="daoru">导入人员数据</div>
       </div>
     </div>
+    <div class="t23">已选的座位数：{{ sums }}</div>
+    <div @click="toggleUnit()" class="change-person">{{ showUnit ? "显示单位" : "显示人员" }}</div>
+    <div class="zhuxitai">
+      <div style="position: absolute; left: 35%; top: 0px">
+      <span class="mainTai">主席台</span>
+    </div>
+      <div style="display: flex; position: absolute; left: 33%; top: 50px">
+        <div v-for="index of 10" :key="index">
+          <img src="../assets/画板 32.png" alt />
+        </div>
+      </div>
+    </div>
+    
     <!-- 规则选择 -->
     	  <!-- <select v-model="index">
           <option value="1">1</option>
@@ -98,7 +101,8 @@
     </div>
     <!-- 座位及过道 -->
     <div class="xstyle">
-      <div
+     <div class="list_wrap">
+        <div
         v-for="(item, index) of charList"
         @click="own($event)"
         @dblclick="reset($event)"
@@ -116,6 +120,7 @@
         @drop="onDrop($event)"
         @dragover="onDragover($event)"
       ></div>
+     </div>
     </div>
     <!-- 右键菜单 -->
     <div v-show="menuVisible">
@@ -142,7 +147,7 @@ export default {
       peopleName: "",
       xlist: [],
       sec: null,
-      index: 1,
+      index: '',
       option: {},
       sums: 0,
       persons: [],
@@ -172,10 +177,10 @@ export default {
       unit: "", // 单位
       showUnit: false, // 显示单位按钮
       options: [{
-          value: '选项1',
+          value: '1',
           label: '规则1'
         }, {
-          value: '选项2',
+          value: '2',
           label: '规则2'
         }],
         value: ''
@@ -213,8 +218,11 @@ export default {
     },
     //初次拖动获取 拖动的索引id
     onDragstart(event) {
-      this.stargindex = event.target.getAttribute("data-id");
-      console.log(this.stargindex);
+      if(event.target.getAttribute('data-type') == 1){
+        this.stargindex = event.target.getAttribute("data-id");
+      }
+      
+      // console.log(this.stargindex);
     },
     //经过容器内部
     onDragover(event) {
@@ -222,15 +230,20 @@ export default {
     },
     //鼠标落下获取其容器的id
     onDrop(event) {
-      this.endIndex = event.target.getAttribute("data-id");
-      console.log(this.endIndex);
+      if(event.target.getAttribute('data-type') == 1){
+        this.endIndex = event.target.getAttribute("data-id");
+      }
+      // console.log(this.endIndex);
     },
     //完成拖动实现交换数组
     onDragend(event) {
-      let StartObj = this.charList[this.stargindex];
-      let EndObj = this.charList[this.endIndex];
-      this.charList.splice(this.endIndex, 1, StartObj);
-      this.charList.splice(this.stargindex, 1, EndObj);
+      if(this.endIndex != null && this.stargindex != null){
+        let StartObj = this.charList[this.stargindex];
+        let EndObj = this.charList[this.endIndex];
+        this.charList.splice(this.endIndex, 1, StartObj);
+        this.charList.splice(this.stargindex, 1, EndObj);
+      }
+      
     },
     closes() {
       this.isshows = false;
@@ -305,16 +318,16 @@ export default {
     // },
     onDragstop(x, y, width, height) {
       this.txtList.x1 = x + 10;
-      this.txtList.y1 = y + 180;
-      this.txtList.y2 = y + this.height + 180;
+      this.txtList.y1 = y + 150;
+      this.txtList.y2 = y + this.height + 100;
       this.txtList.x2 = x + this.width - 10;
       this.handleRectSelection(this.txtList);
     },
     onResizstop(x, y, width, height) {
       this.txtList.x1 = x + 10;
-      this.txtList.y1 = y + 180;
+      this.txtList.y1 = y + 150;
       this.txtList.x2 = x + this.width - 10;
-      this.txtList.y2 = y + this.height + 180;
+      this.txtList.y2 = y + this.height + 100;
       this.handleRectSelection(this.txtList);
     },
     onResize: function(x, y, width, height) {
@@ -339,7 +352,7 @@ export default {
       console.log(111, this.test);
     },
     Sort: function() {
-      // this.isShown = false;
+      // this.isShown = false;  
       const app = this;
       var oT1 = document.querySelectorAll(".grid");
       if (JSON.stringify(app.lastXinxi) == "[]") {
@@ -379,8 +392,6 @@ export default {
     },
     // 排序
     seatSort() {
-      console.log(this.option);
-      
       var oT1 = document.querySelectorAll(".grid");
       // console.log(oT1.attributes.data-type.nodeValue)
       for (var i = 0; i < oT1.length; i++) {
@@ -396,6 +407,7 @@ export default {
               
                 // console.log(`${i}-${j}`)
                 // console.log(this.option[this.lastIndex[j]])
+                this.lastXinxi[j].orderMark = null;
                 if(oT1[i].innerText != '占位'){
                   if (this.option[this.lastIndex[j]] != null) {
                     oT1[i].innerText = this.option[this.lastIndex[j]];
@@ -414,6 +426,8 @@ export default {
       }
     },
     insertPeople() {
+      
+      
       let data = {
         blocks: [
           {
@@ -503,22 +517,23 @@ export default {
     },
     // 占位和人员替换
     own(e) {
-      console.log(e);
-      if (this.ownStatus) {
-        e.currentTarget.innerText = "占位";
-        e.currentTarget.className = "grid zhanyong";
-      } else {
-        let id = e.target.getAttribute("data-index");
-        for (let ids in this.persons) {
-          if (this.persons[ids].id == id) {
-            if (this.peopleName) {
-              e.currentTarget.innerText = this.peopleName;
-              e.currentTarget.className = "grid choose";
-              this.persons[ids].userUnit.name = this.peopleName;
-              this.persons[ids] = Object.assign({}, this.persons[ids]);
-              console.log(this.peopleName);
+      if(e.target.getAttribute('data-type') == 1){
+        if (this.ownStatus) {
+          e.currentTarget.innerText = "占位";
+          e.currentTarget.className = "grid zhanyong";
+        } else {
+          let id = e.target.getAttribute("data-index");
+          for (let ids in this.persons) {
+            if (this.persons[ids].id == id) {
+              if (this.peopleName) {
+                e.currentTarget.innerText = this.peopleName;
+                e.currentTarget.className = "grid choose";
+                this.persons[ids].userUnit.name = this.peopleName;
+                this.persons[ids] = Object.assign({}, this.persons[ids]);
+                console.log(this.peopleName);
+              }
+              this.peopleName = "";
             }
-            this.peopleName = "";
           }
         }
       }
@@ -554,21 +569,44 @@ export default {
 <style lang="less" scoped>
 @import "../assets/css/var.less";
 // 示例样式 开始
+.gongnengqu{
+  width: 100%;
+  // position: relative;
+  // padding-right:-50px;
+  
+  display: flex;
+  justify-content: space-between;
+  background: #fff;
+  .head_right{
+    margin-top:10px;
+    display: flex;
+  }
+}
+
 .sample {
-  padding-top: 20px;
+  
   .sample-inner:nth-child(2),
   .sample-inner:nth-child(3) {
     padding-left: 30px;
+    display: flex;
+    line-height: 50px;
   }
   .sample-inner:nth-child(1) {
-    padding-left: 50px;
+    padding-left: 10px;
+    display: flex;
+    line-height:50px;
   }
   .sample-inner {
     .sample-text {
       color: @sample-text-color;
+      margin-right:10px;
     }
     .sample-text:nth-child(1) {
       margin-left: 10px;
+    }
+    .sample-pic img {
+      width:50px;
+      height: 50px;
     }
   }
 }
@@ -581,6 +619,7 @@ export default {
 .section{
   
   width:120px;
+  background-color: #e6edf4 !important;
 }
 .dialog {
   position: absolute;
@@ -598,6 +637,7 @@ export default {
 }
 .zhuxitai {
   position: relative;
+  margin-top: 30px;
 }
 .mainTai {
   position: relative;
@@ -628,12 +668,13 @@ export default {
   display: flex;
   position: relative;
   width: 30%;
+  margin-top:10px;
 }
 #app {
   background-color: #e6edf4;
-  background-repeat: no-repeat;
-  overflow: scroll;
-  padding-bottom: 100px;
+  width:100%;
+  height: 100%;
+  // border: 1px solid black;
 }
 .top {
   position: relative;
@@ -646,16 +687,8 @@ export default {
   background-repeat: no-repeat;
   overflow: hidden;
 }
-.banner {
-  position: relative;
-  height: 50px;
-  color: #fff;
-}
+
 .xianshi {
-  position: absolute;
-  right: 200px;
-  top: -50px;
-  z-index: 999;
   width: 115px;
   height: 35px;
   text-align: center;
@@ -664,25 +697,20 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
+  margin-right:20px;
 }
 .change-person {
   position: absolute;
-  right: 110px;
-  top: -10px;
-  z-index: 999;
+  right:20px;
   width: 115px;
   height: 35px;
   text-align: center;
   line-height: 35px;
-  background-image: url("../assets/画板 36.png");
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
 }
 .quyu {
-  position: absolute;
-  right: 80px;
-  top: -50px;
   z-index: 999;
   width: 115px;
   height: 30px;
@@ -692,11 +720,9 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
+  margin-right:20px;
 }
 .daoru {
-  position: absolute;
-  right: -40px;
-  top: -50px;
   width: 115px;
   height: 35px;
   z-index: 998;
@@ -706,10 +732,11 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
   color: #000;
+  margin-right:20px;
 }
 .t23 {
   position: absolute;
-  top: 0px;
+  top: 100px;
   left: 72.5%;
   font-size: 18px;
   color: #000;
@@ -734,21 +761,31 @@ img {
   cursor: default;
 }
 .xstyle {
-  margin-top: 100px;
+ 
   /* display: flex;
     flex-direction: row;
     flex-wrap: wrap; */
+    
+  width: calc(100% - 76px);
+  padding: 20px;
+  .list_wrap{
+    //  margin-top: 100px;
+//  border: 1px solid black;
   width: 100%;
+  height:600px;
+  overflow-x: scroll;
   display: grid;
-  margin: 5rem 0 0 0;
-  padding: 0 3rem 0 3rem;
+  margin: 10rem 0 0 0;
+  padding: 0 1rem 0 1rem;
   grid-template-columns: repeat(34, auto);
   grid-template-rows: repeat(8, auto);
+  background-color: #e6edf4;
+  }
 }
 .grid {
   cursor: grab;
-  width: 50px;
-  height: 50px;
+  width: 55px;
+  height: 55px;
   color: black;
   text-align: center;
   
@@ -774,9 +811,6 @@ img {
   color: #000;
 }
 #reset {
-  position: absolute;
-  right: 320px;
-  top: -50px;
   width: 115px;
   height: 35px;
   line-height: 40px;
@@ -784,7 +818,7 @@ img {
   background-image: url("../assets/画板 36.png");
   background-size: 100% 100%;
   background-repeat: no-repeat;
-
+  margin-right:20px;
   color: #000;
 }
 /* 右键菜单样式 */

@@ -46,7 +46,7 @@
         <div @click="insertPeople" class="daoru">导入人员数据</div>
       </div>
     </div>
-    <div class="t23">已选的座位数：{{ sums }}</div>
+    <div class="t23">已选的座位数：<span style="color:#ef7621;">{{ sums }}</span></div>
     <div @click="toggleUnit()" class="change-person"><span class="cg"><img src="../assets/change.png" alt=""></span><span class="wenzi">{{ showUnit ? "显示单位" : "显示人员" }}</span></div>
     <div class="zhuxitai">
       <div style="position: absolute; left: 35%; top: 0px">
@@ -449,6 +449,7 @@ export default {
     sortPerson() {
       var a= 0;
       var oT1 = document.querySelectorAll(".grid");
+      this.index=''
       for (var i = 0; i < oT1.length; i++) {
         for (var j = 0; j < this.sortIndex.length; j++) {
           if (i == this.sortIndex[j]) {
@@ -473,7 +474,7 @@ export default {
           }
         }
       }
-      this.sums = a
+      this.sums = this.sums + a
     },
     changeVisibility() {
       this.isShown = !this.isShown;
@@ -754,9 +755,9 @@ export default {
 }
 .t23 {
   position: absolute;
-  top: 100px;
-  left: 72.5%;
-  font-size: 18px;
+  top: 15px;
+  left: 27%;
+  font-size: 20px;
   color: #000;
 }
 .st {

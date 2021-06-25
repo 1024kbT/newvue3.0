@@ -31,8 +31,7 @@
           @dragover.prevent="handleDragOver($event)"
           @dropstop="handleDrop($event)"
         >{{this.ownStatus?'关闭':'批量占位'}}</div>
-        <div @click="changeVisibility" v-show="!isShown" class="xianshi">选择区域</div>
-        <div @click="changeVisibility" v-show="isShown" class="xianshi">确定区域</div>
+        <div @click="changeVisibility" class="xianshi">{{this.isShown?'确定区域':'选择区域'}}</div>
         <div class="quyu">
           <el-select v-model="index" placeholder="请选择规则" class="section" @change="Sort">
             <el-option

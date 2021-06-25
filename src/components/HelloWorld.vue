@@ -21,7 +21,6 @@
           </div>
         </div>
       </div>
-      
       <div class="head_right">
         <div
           id="reset"
@@ -41,7 +40,6 @@
               :key="item.value"
               :label="item.label"
               :value="item.value"
-               
               >
             </el-option>
           </el-select>
@@ -61,14 +59,11 @@
         </div>
       </div>
     </div>
-    
     <!-- 规则选择 -->
     	  <!-- <select v-model="index">
           <option value="1">1</option>
           <option value="2">2</option>
         </select> -->
-        
-
     <vue-draggable-resizable
       :w="950"
       :h="490"
@@ -167,6 +162,8 @@ export default {
       ownStatus: false, // 占位按钮开关状态,
       xinxi: [],
       seat: [],
+       replaceId: "", //替换ID
+      replaceIndex: 0, //替换索引
       lastSeat: [],
       lastXinxi: [],
       indexList: [],
@@ -213,16 +210,31 @@ export default {
   },
   mounted: function() {},
   methods: {
-    //人员列表显示
-    replacePeople() {
+    //获取对象在数组的索引值
+   replacePeople() {
       this.isshows = !this.isshows;
+      for (let i in this.persons) {
+        if (this.dataIndex == this.persons[i].id) {
+          this.replaceIndex = i;
+        }
+      }
+    },
+       //保存替换人员姓名的变量
+    replaceInfo(e) {
+      this.persons[this.replaceIndex].userUnit.name = e.name;
+      this.persons.splice(
+        this.replaceIndex,
+        1,
+        this.persons[this.replaceIndex]
+      );
+      this.sortPerson();
+      this.isshows = false;
     },
     //初次拖动获取 拖动的索引id
     onDragstart(event) {
       if(event.target.getAttribute('data-type') == 1){
         this.stargindex = event.target.getAttribute("data-id");
       }
-      
       // console.log(this.stargindex);
     },
     //经过容器内部
@@ -244,7 +256,6 @@ export default {
         this.charList.splice(this.endIndex, 1, StartObj);
         this.charList.splice(this.stargindex, 1, EndObj);
       }
-      
     },
     closes() {
       this.isshows = false;
@@ -275,7 +286,6 @@ export default {
           } else {
             app.charList[index].merge = 0;
           }
-
           if ($(this).attr("data-type") == 1) {
             a = a + 1;
           }
@@ -289,7 +299,6 @@ export default {
       });
       app.lastSeat = app.seat;
       app.lastXinxi = app.xinxi;
-      
       app.lastIndex = app.indexList;
       app.seat = [];
       app.xinxi = [];
@@ -309,14 +318,7 @@ export default {
       yNotCross = rect1.y1 > rect2.y2 || rect2.y1 > rect1.y2;
       return !(xNotCross || yNotCross);
     },
-    //保存替换人员姓名的变量
-    replaceInfo(e) {
-      this.peopleName = e.name;
-    },
-    // replaceName() {
-    //     this.peopleName = this.temp;
-    //     this.flag=2;
-    // },
+ 
     onDragstop(x, y, width, height) {
       this.txtList.x1 = x + 10;
       this.txtList.y1 = y + 150;
@@ -405,7 +407,6 @@ export default {
             var dataType = oT1[i].getAttribute("data-type");
             // console.log(oT1[0].attributes['data-type'].substring(5,6))
             if (dataType == 1) {
-              
                 // console.log(`${i}-${j}`)
                 // console.log(this.option[this.lastIndex[j]])
                 this.lastXinxi[j].orderMark = null;
@@ -427,8 +428,6 @@ export default {
       }
     },
     insertPeople() {
-      
-      
       let data = {
         blocks: [
           {
@@ -485,8 +484,7 @@ export default {
     // 实现右键菜单
     rightClick(e) {
       console.log("rightClick");
-      // console.log(e.currentTarget.getAttribute('data-index'));
-      this.dataIndex = e.currentTarget.getAttribute('data-index')
+      this.dataIndex = e.currentTarget.getAttribute('data-index');
       console.log(this.dataIndex);
       this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
       this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
@@ -591,7 +589,6 @@ export default {
   width: 100%;
   // position: relative;
   // padding-right:-50px;
-  
   display: flex;
   justify-content: space-between;
   background: #fff;
@@ -600,9 +597,7 @@ export default {
     display: flex;
   }
 }
-
 .sample {
-  
   .sample-inner:nth-child(2),
   .sample-inner:nth-child(3) {
     padding-left: 30px;
@@ -635,7 +630,6 @@ export default {
         z-index: 999;
     }
 .section{
-  
   width:120px;
   background-color: #e6edf4 !important;
 }
@@ -663,7 +657,6 @@ export default {
   margin-left: 210px;
   font-size: 26px;
 }
-
 // 导入数据后的样式
 .choose {
   width: 49px;
@@ -681,7 +674,6 @@ export default {
   background-repeat: no-repeat;
   background-size: 100% 100%;
 }
-
 .sample {
   display: flex;
   position: relative;
@@ -705,7 +697,6 @@ export default {
   background-repeat: no-repeat;
   overflow: hidden;
 }
-
 .xianshi {
   width: 115px;
   height: 35px;
@@ -779,11 +770,9 @@ img {
   cursor: default;
 }
 .xstyle {
- 
   /* display: flex;
     flex-direction: row;
     flex-wrap: wrap; */
-    
   width: calc(100% - 76px);
   padding: 20px;
   .list_wrap{
@@ -806,7 +795,6 @@ img {
   height: 55px;
   color: black;
   text-align: center;
-  
   margin-bottom: 20px;
   background-image: url("../assets/画板 32.png");
   background-repeat: no-repeat;
@@ -873,6 +861,5 @@ li:hover {
   background-repeat: no-repeat;
   color: #fff !important;
 }
-
 // 选中样式
 </style>

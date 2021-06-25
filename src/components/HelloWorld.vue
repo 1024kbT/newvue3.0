@@ -1,5 +1,5 @@
 <template>
-  <div id="app" @contextmenu.prevent="rightClick($event)">
+  <div id="app">
     <div class="gongnengqu">
       <div class="sample">
         <div class="sample-inner">
@@ -31,7 +31,7 @@
           @dragstart="handleDragStart($event)"
           @dragover.prevent="handleDragOver($event)"
           @dropstop="handleDrop($event)"
-        >占位</div>
+        >{{this.ownStatus?'关闭':'批量占位'}}</div>
         <div @click="changeVisibility" v-show="!isShown" class="xianshi">选择区域</div>
         <div @click="changeVisibility" v-show="isShown" class="xianshi">确定区域</div>
         <div class="quyu">
@@ -104,6 +104,7 @@
      <div class="list_wrap">
         <div
         v-for="(item, index) of charList"
+        @contextmenu.prevent="rightClick($event)"
         @click="own($event)"
         @dblclick="reset($event)"
         :key="item.id"
@@ -126,7 +127,7 @@
     <div v-show="menuVisible">
       <ul id="menu" class="menu">
         <li class="menu__item" @click="reset()">重置</li>
-        <li class="menu__item">占位</li>
+        <li class="menu__item" @click='rcOwn()'>占位</li>
         <li class="menu__item" @click="replacePeople($event)">替换</li>
       </ul>
     </div>
@@ -161,7 +162,6 @@ export default {
       peopleList: [],
       isShown: false,
       isshows: false,
-      temp: "",
       flag: 1,
       menuVisible: false,
       ownStatus: false, // 占位按钮开关状态,
@@ -183,7 +183,8 @@ export default {
           value: '2',
           label: '规则2'
         }],
-        value: ''
+      value: '',
+      dataIndex: '' // 保存要操作对象的索引值
     }
   },
   components: {
@@ -482,8 +483,11 @@ export default {
       //   this.dragging = item;
     },
     // 实现右键菜单
-    rightClick(event) {
+    rightClick(e) {
       console.log("rightClick");
+      // console.log(e.currentTarget.getAttribute('data-index'));
+      this.dataIndex = e.currentTarget.getAttribute('data-index')
+      console.log(this.dataIndex);
       this.menuVisible = false; // 先把模态框关死，目的是 第二次或者第n次右键鼠标的时候 它默认的是true
       this.menuVisible = true; // 显示模态窗口，跳出自定义菜单栏
       var menu = document.querySelector("#menu");
@@ -561,6 +565,16 @@ export default {
           element.innerText = element.getAttribute("name");
         });
       }
+    },
+    // 右键菜单占位
+    rcOwn(){
+      let attr = `div[data-index='${this.dataIndex}']`
+      // console.log(attr);
+      // console.log(document.querySelector("div[data-index='1-12']"))
+      // console.log(document.querySelector(attr))
+      let obj = document.querySelector(attr)
+      obj.innerText = "占位";
+      obj.className = "grid zhanyong";
     }
   }
 };

@@ -126,7 +126,7 @@
     <!-- 右键菜单 -->
     <div v-show="menuVisible">
       <ul id="menu" class="menu">
-        <li class="menu__item" @click="reset()">重置</li>
+        <li class="menu__item" @click="rcReset()">重置</li>
         <li class="menu__item" @click='rcOwn()'>占位</li>
         <li class="menu__item" @click="replacePeople($event)">替换</li>
       </ul>
@@ -519,6 +519,13 @@ export default {
       e.currentTarget.innerText = "";
       e.currentTarget.className = "grid";
     },
+    // 右键菜单重置
+    rcReset(){
+      let attr = `div[data-index='${this.dataIndex}']`
+      let obj = document.querySelector(attr)
+      obj.innerText = ""
+      obj.className = "grid"
+    },
     // 占位和人员替换
     own(e) {
       if(e.target.getAttribute('data-type') == 1){
@@ -569,9 +576,6 @@ export default {
     // 右键菜单占位
     rcOwn(){
       let attr = `div[data-index='${this.dataIndex}']`
-      // console.log(attr);
-      // console.log(document.querySelector("div[data-index='1-12']"))
-      // console.log(document.querySelector(attr))
       let obj = document.querySelector(attr)
       obj.innerText = "占位";
       obj.className = "grid zhanyong";

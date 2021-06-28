@@ -144,7 +144,7 @@
         <!-- 右键菜单 -->
         <div v-show="menuVisible">
             <ul id="menu" class="menu">
-                <li class="menu__item" @click="rcReset()">清空</li>
+                <li class="menu__item" @click="rcReset()">移除</li>
                 <li class="menu__item" @click="rcOwn()">占位</li>
                 <li class="menu__item" @click="replacePeople($event)">替换</li>
             </ul>

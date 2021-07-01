@@ -7,7 +7,7 @@ const server = {
         });
     },
     getDistributeData() {
-        return axios("/conference/findByConfId/1", {
+        return axios("/conference/findByConfId/5", {
             method: "get",
         });
     },

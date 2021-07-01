@@ -193,6 +193,8 @@ export default {
             indexList: [],
             lastIndex: [],
             newPersons: [],
+            row:0,
+            col:0,
             blockId: 0,
             sortMessage: [],
             sortIndex: [],
@@ -220,25 +222,41 @@ export default {
     },
     created() {
         this.$axios
+            .getDistributeData()
+            .then((res) => {
+                this.charList = res.data.data.confSeats;
+                this.row=res.data.data.row;
+                this.col=res.data.data.col;
+                
+                this.changeClass()
+                
+            })
+            .catch(function(res) {
+                console.log(res.data);
+            });
+        this.$axios
             .getNoPeople()
             .then((res) => {
                 this.peopleList = res.data.data;
+                
             })
             .catch(function(res) {
                 console.log(res.data);
             });
 
-        this.$axios
-            .getDistributeData()
-            .then((res) => {
-                this.charList = res.data.data.confSeats;
-            })
-            .catch(function(res) {
-                console.log(res.data);
-            });
+        
+        
+            
     },
-    mounted: function() {},
+    mounted: function() {
+        
+    },
     methods: {
+        changeClass(){
+            let aa = document.querySelector('.list_wrap')
+            aa.style.gridTemplateColumns = 'repeat('+this.col+', auto)'
+            aa.style.gridTemplateRows = 'repeat('+this.row+', auto)'
+        },
         //拖动人员列表
         onDragendTable(e) {
             let obj = document.querySelector("#my-table");
@@ -858,8 +876,7 @@ img {
         display: grid;
         margin: 3rem 0 0 0;
         padding: 0 1rem 0 1rem;
-        grid-template-columns: repeat(34, auto);
-        grid-template-rows: repeat(8, auto);
+        
         background-color: #e6edf4;
     }
 }

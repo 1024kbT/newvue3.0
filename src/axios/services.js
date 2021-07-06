@@ -6,6 +6,12 @@ const server = {
             method: "get",
         });
     },
+    getDeleteList(data) {
+        return axios("/conference/deleteAndFill",{
+            method:"post",
+            data
+        })
+    },
     getDistributeData() {
         return axios("/conference/findByConfId/5", {
             method: "get",

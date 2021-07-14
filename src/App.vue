@@ -1,28 +1,31 @@
 <template>
   <div class="app">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <mobile />
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import HelloWorld from "./components/HelloWorld.vue";
+import mobile from "./components/mobileTerminal.vue";
 
 export default {
-  name: 'app',
+  name: "app",
   components: {
-    HelloWorld
-  }
-}
+    HelloWorld,
+    mobile,
+  },
+};
 </script>
 
 <style>
-html,body{
+html,
+body {
   width: 100%;
   height: 100%;
   margin: 0;
   padding: 0;
 }
-.app{
+.app {
   width: 100%;
   height: 100%;
   /* overflow: hidden; */
